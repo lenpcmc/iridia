@@ -1,14 +1,14 @@
 ######################################
-#,FORCE,FIELD,PARAMETERS,FOR,MST,#
+# FORCE FIELD PARAMETERS FOR MST     #
 ######################################
-#,FFTYPE,shell
-#,FFVER,1.5
-#,NNUM,1,EL
-#,NTYPE,0
-#,NOPT,1,POLARIZABLE
-#,NPAR,6,Xo,Jo,Qc,Rcs,Fcs,Qd
+# FFTYPE shell
+# FFVER 1.5
+# NNUM 1 EL
+# NTYPE 0
+# NOPT 1 POLARIZABLE
+# NPAR 6 Xo Jo Qc Rcs Fcs Qd
 ########################################################
-#,E,P,Xo,Jo,Qc,Rc,Rs,K2,k4,#
+E,P,Xo,Jo,Qc,Rc,Rs,K2,k4,
 ########################################################
 H,1,4.72484,15.57338,1.000000,0.37100,0.37100,2037.20061,0.0
 He,1,9.66000,29.84000,1.000000,1.30000,1.30000,1619.41057,0.0

@@ -1,14 +1,11 @@
 ################################################################
+#Polarizable Charge Equilibration (PQEq1) Parameter Set
 #
-#,Polarizable,Charge,Equilibration,(PQEq),Parameter,Set
-#
-#,contacts:
-#,Saber,Naserifar,,naseri@caltech.edu
-#,William,A.,Goddard,III,,wag@wag.caltech.edu
-#
-#
+#contacts:
+#Saber Naserifar  naseri@caltech.edu
+#William A. Goddard III  wag@wag.caltech.edu
 ################################################################
-#E,P,Xo,Jo,Z,Rc,Rs,Ks
+E,P,Xo,Jo,Z,Rc,Rs,Ks
 ################################################################
 H,1,4.52800,12.98410,1.000000,0.37100,0.37100,2037.20061
 He,1,9.66000,29.84000,1.000000,1.30000,1.30000,1619.41057
