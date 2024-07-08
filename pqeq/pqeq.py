@@ -1,4 +1,4 @@
-from __init__ import *
+from .main import *
 
 from ase.geometry import get_distances
 
@@ -25,14 +25,24 @@ class PQEqCalculator(Calculator):
     """ PQEq Calculator for ASE """
     implemented_properties = ( "energy", "forces", "dipole", "charges" )
 
-    def __init__(self, atoms: Atoms, rendition: int = 0) -> None:
-        self.atoms = atoms
+    def __init__(self, atoms: Atoms, rendition: int = 0, **kwargs) -> None:
+        
+        super().__init__(command, **kwargs)
+        
+        self.shells = shellPositions(atoms.positions, elem = atoms.get_chemical_symbols(), cell = atoms.cell, pbc = atoms.pbc)
+        self.charges = PQEq(atoms.positions)
         self.n = rendition
         return
     
     def calculate(self, atoms: Atoms, properties: list = implemented_properties):
+        
+        self.pos = atoms.positions()
+        self.cell = atoms.cell.copy()
+        self.pbc = atoms.pbc.copy()
 
         if ("energy" in properties):
+            PQEqEnergy(pos, spos, symbols, charges, cell, pbc, n)
+
             #pqeqEnergy(atoms)
             print("energy")
         if ("forces" in properties):
@@ -66,6 +76,17 @@ def loadParams(n: int = 0, eV: bool = True):
     # Format
     params: dict[str,str: float] = { (p,e): atomParams[i,j] for j,p in enumerate(par) for i,e in enumerate(elements) }
     return params
+
+
+def alpha(elem: str, n: int = 0) -> float:
+    """ Alpha Coefficient for Gaussian Charge Distribution """
+    """ Can be Vectorized """
+    params = loadParams(n)
+    elem: list[str] = [elem] if type(elem) == str else elem
+    Rk: np.ndarray = np.array([ params["Rs", e] for e in elem ])
+    lambda_pqeq: float = 0.462770
+    return 0.5 * lambda_pqeq / Rk**2
+
 
 
 if __name__ == "__main__":

@@ -1,19 +1,22 @@
-from __init__ import *
-from energy import *
-from force import *
+from .main import *
+from .energy import *
+from .force import *
 
 from scipy.sparse.linalg import spilu, LinearOperator, cg as ConjugateGradient
 
 
 def main():
-    #atoms = ase_read("wollastonite.cif")
-    #structure, atoms = buildArray("wollastonite.cif", [1,1,1])
-    atoms = ase_read("cyclohexane.sdf")
+    atoms = ase_read(f"{root}/resources/atoms/W3O9.sdf")
+    structure, atoms = buildArray(f"{root}/resources/atoms/betaCristobalite.cif", 5)
+    #structure, atoms = buildArray("NaCl.cif", [5,5,5])
+    #atoms = ase_read("cyclohexane.sdf")
     atoms.get_charges = lambda: np.zeros(len(atoms))
-    q = pqeq(atoms)
-    print(f"{q = }")
+    for i in range(3):
+        q = pqeq(atoms, 0)
+        atoms.get_charges = lambda: q
+        plt.plot(range(len(q)), q)
+    print("\n".join([ f"{atoms.get_chemical_symbols()[i]}: {q[i]}" for i in range(len(atoms)) ]))
     print(f"{q.shape =  }")
-    plt.plot(range(len(q)), q)
     plt.show()
     return
 
@@ -40,10 +43,10 @@ def PQEq(positions: np.ndarray[float], spositions: np.ndarray[float], elem: list
 
     # PQEq Parameters
     params = loadParams(n)
-    Xo: np.ndarray = np.array([ params["Xo", e] for e in elem ])
+    Xo: np.ndarray = np.array([ [params["Xo", e]] for e in elem ])
     Jo: np.ndarray = np.array([ params["Jo", e] for e in elem ])
     Ks: np.ndarray = np.array([ params["Ks", e] for e in elem ])
-    Z: np.ndarray = np.array([ params["Z", e] for e in elem ])
+    Z: np.ndarray = np.array([ [params["Z", e]] for e in elem ])
     
     # Legrange Algorithm
     ricjc: np.ndarray = get_distances(pos, pos, cell, pbc)[1]
@@ -52,8 +55,9 @@ def PQEq(positions: np.ndarray[float], spositions: np.ndarray[float], elem: list
     Cicjc: np.ndarray = C(ricjc, elem, n = n)
     Cicjs: np.ndarray = C(ricjs, elem, n = n)
 
-    Hij: np.ndarray = Cicjc + np.diag(Jo)
-    Ai: np.ndarray = np.stack([ Xo + Z * np.sum(np.tril( Cicjc - Cicjs ), axis = 1) ], axis = 1)
+    Hij: np.ndarray = 14.4 * Cicjc + np.diag(Jo)
+    #Hij: np.ndarray = Cicjc + np.diag(Jo)
+    Ai: np.ndarray = Xo + Z * np.sum(np.tril( Cicjc - Cicjs ), axis = 1, keepdims = True)
 
     # H Inversion (PCG  Approximation)
     sHij_iLU: SuperLu = spilu(Hij)
