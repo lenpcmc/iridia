@@ -1,5 +1,4 @@
-from main import *
-#from .main import *
+from .main import *
 
 
 def main():
@@ -30,7 +29,7 @@ def dynamical(atoms: Atoms, h: float = 1e-5):
     """ Get the Dynamical (Hessian * sqrt(m1*m2)) """
     """ for a given set of atoms. """
 
-    mtensor: np.ndarray = np.array([ (m, m, m) for m in atoms.get_masses() ]).reshape((atoms.positions.size, 1))
+    mtensor: np.ndarray = 1. / np.array([ (m, m, m) for m in atoms.get_masses() ]).reshape((atoms.positions.size, 1))
     mmask: np.ndarray = np.sqrt(mtensor @ mtensor.T)
     H: np.ndarray = hessian(atoms, h)
     return H * mmask

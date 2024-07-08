@@ -8,13 +8,13 @@ from ase.io import read as ase_read
 from ase.cell import Cell
 from ase.geometry import get_distances
 
-from tqdm import tqdm
-enum = lambda x: tqdm(enumerate(x))
-
 from time import perf_counter
+from tqdm import tqdm
+enum = lambda x: enumerate(tqdm(x))
 
 from .. import root
 from ..build import *
+
 
 def loadParams(n: int = 0, eV: bool = True):
     # Load Data
