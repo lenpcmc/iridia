@@ -1,2 +1,1 @@
-# iridia
-# InfraRed Interatomic DIpole Analysis
+# iridia: InfraRed Interatomic DIpole Analysis
