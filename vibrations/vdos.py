@@ -1,6 +1,5 @@
 from .main import *
 
-
 def main():
     structure, atoms = buildArray(f"{aroot}/wollastonite.cif", 1, fmax = 1)
     structure, atoms = buildArray(f"{aroot}/danburite.cif", 3, fmax = 1)
@@ -10,13 +9,23 @@ def main():
 
 
 def vdos(atoms: Atoms, conv: float = 15.63, h: float = 1e-5) -> (np.ndarray, np.ndarray):
-    """ Get the frequencies and vibrations of phonons """
-    """ for a given set of atoms. """
+    """ Calculate the frequencies and vibrations of the """
+    """ phonons pathways for a given set of atoms. """
     
-    # VDOS Calculation
+    # Diagonalization
     dyn: np.ndarray = dynamical(atoms, h)
+
+    return vdosDyn(dyn)
+
+
+def vdosDyn(dyn: np.ndarray, conv: float = 15.63) -> (np.ndarray, np.ndarray):
+    """ Calculate the Vibrational Density of States """
+    """ for a given dynamical matrix. """
+
+    # Diagonalization
     freqk, vibrations = np.linalg.eigh(dyn)
-    freqk *= conv
+    freqk: np.ndarray = freqk * conv
+    vibrations: np.ndarray = vibrations.T.reshape( len(freqk), len(freqk) // 3, 3 )
 
     # Remove nan
     np.nan_to_num(freqk, 0.)
@@ -44,7 +53,7 @@ def hessian(atoms: Atoms, h: float = 1e-5):
         atoms.calc = CHGNetCalculator()
 
     # Allocate and Fill
-    H: np.ndarray = np.array([ hessRow(atoms, i, h) for i in trange( 3*len(atoms) ) ])
+    H: np.ndarray = np.array([ hessRow(atoms, i, h) for i in trange( 3*len(atoms), desc = f"Solving Dynamical Matrix" ) ])
 
     # Ensure Symmetry over Numeric Precision
     return -1. * (H + H.T) / 2.
@@ -70,7 +79,3 @@ def hessRow(atoms: Atoms, i: int, h: float = 1e-5) -> np.ndarray:
     D: np.ndarray = (fp - fn) / (2. * h)
 
     return D
-
-
-if __name__ == "__main__":
-    main()

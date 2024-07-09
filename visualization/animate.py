@@ -21,7 +21,7 @@ from ..vibrations.vdos import *
 def main():
     atoms = ase_read(f"{aroot}/wollastonite.cif")
     dyn = np.load(f"{rroot}/arrays/wollastonite.npy")
-    freqk, vibrations = vdos(dyn)
+    freqk, vibrations = vdosDyn(dyn)
     vibration = vibrations[50]
     animateVibration(atoms, vibration)
     animateAtoms(atoms, None)

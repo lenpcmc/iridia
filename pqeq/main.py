@@ -10,9 +10,9 @@ from ase.geometry import get_distances
 
 from time import perf_counter
 from tqdm import tqdm
-enum = lambda x: enumerate(tqdm(x))
+enum = lambda x, d = "": enumerate(tqdm(x, d))
 
-from .. import root
+from .. import root, rroot, aroot, proot
 from ..build import *
 
 

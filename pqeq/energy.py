@@ -1,5 +1,5 @@
 from .main import *
-
+from scipy.special import erf
 
 def main():
     atoms = ase_read("wollastonite.cif")

@@ -1,5 +1,5 @@
 from .main import *
-
+from scipy.special import erf
 
 def main():
     #from charge import pqeq
