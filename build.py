@@ -23,11 +23,11 @@ def buildNumber(filename: str, numAtoms: int = 1000, fmax: float = 0.01, steps: 
 
     repeatNumber = int(np.cbrt(numAtoms/len(relaxedStruct))) + 1
     repeatStruct = relaxedStruct.make_supercell(repeatNumber)
-    repeatAtoms = relaxedStruct * repeatArray
-    return repeatAtoms, repeatStruct
+    repeatAtoms = relaxedAtoms * repeatNumber
+    return repeatStruct, repeatAtoms
 
 
-def buildArray(filename: str, repeat: int = 1, fmax: float = 0.01, steps: int = 2500) -> Atoms:
+def buildArray(filename: str, repeat: int = 1, fmax: float = 0.01, steps: int = 2500, optimizer = "BFGS") -> Atoms:
     #chgnet = CHGNet.load()
     structure = Structure.from_file(filename)
     relaxed = relaxStruct(structure, fmax, steps)

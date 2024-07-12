@@ -6,46 +6,48 @@ def atomDipoles(atoms: Atoms) -> np.ndarray:
 
 
 def dipole(pos: np.ndarray, charge: float) -> np.ndarray:
-    pos: np.ndarray = np.atleast_2d(pos)
-    charge: np.ndarray = np.atleast_2d(charge).T
+    pos: np.ndarray = extend(pos, 3)
+    charge: np.ndarray = extend(charge, 3).swapaxes(1,2)
     return pos * charge
 
 
 def atomDipolePartial(atoms: Atoms, delta: np.ndarray, method: str = "central", h: float = 1e-5) -> np.ndarray:
 
     # Init
-    patoms: Atoms = atoms.copy()
     pos: np.ndarray = atoms.positions.copy()
+    patoms: Atoms = atoms.copy()
+    patoms.calc = atoms.calc
+    patoms.get_charges = atoms.get_charges
 
     # Forward Finite Method
     if (method == "forward"):
         patoms.positions = pos + delta * h
-        dp: np.ndarray = atomDipoles(atoms)
+        dp: np.ndarray = atomDipoles(patoms)
 
         patoms.positions = pos
-        dn: np.ndarray = atomDipoles(atoms)
+        dn: np.ndarray = atomDipoles(patoms)
         
         D: np.ndarray = (dp - dn) / h
 
     # Backward Finite Method
     elif (method == "backward"):
         patoms.positions = pos
-        dp: np.ndarray = atomDipoles(atoms)
+        dp: np.ndarray = atomDipoles(patoms)
 
         patoms.positions = pos - delta * h
-        dn: np.ndarray = atomDipoles(atoms)
+        dn: np.ndarray = atomDipoles(patoms)
         
         D: np.ndarray = (dp - dn) / h
 
     # Central Finite Method
     else:
         patoms.positions = pos + delta * h
-        dp: np.ndarray = atomDipoles(atoms)
+        dp: np.ndarray = atomDipoles(patoms)
 
         patoms.positions = pos - delta * h
-        dn: np.ndarray = atomDipoles(atoms)
+        dn: np.ndarray = atomDipoles(patoms)
         
-        D: np.ndarray = (dp - dn) / (h * 2.)
+        D: np.ndarray = np.sum(dp - dn, axis = 0) / (h * 2.)
 
     return D
 
@@ -71,10 +73,7 @@ def dipolePartial(positions: np.ndarray, delta: np.ndarray, charge: Callable[np.
     else:
         dp: np.ndarray = dipole(pos + delta * h, charge(pos))
         dn: np.ndarray = dipole(pos - delta * h, charge(pos))
-        D: np.ndarray = (dp - dn) / (h * 2.)
+        D: np.ndarray = np.sum(dp - dn, axis = 0) / (h * 2.)
 
     return D
-
-
-    return
 

@@ -1,10 +1,12 @@
 from .main import *
 
 def main():
+    from .vplot import vplot
     structure, atoms = buildArray(f"{aroot}/wollastonite.cif", 1, fmax = 1)
     structure, atoms = buildArray(f"{aroot}/danburite.cif", 3, fmax = 1)
-    structure, atoms = buildArray(f"{aroot}/betaCristobalite.cif", 1, fmax = 1)
+    structure, atoms = buildArray(f"{aroot}/betaCristobalite.cif", [3,2,2], fmax = 1)
     freqk, vibrations = vdos(atoms)
+    vplot(freqk, width = 30)
     return
 
 
@@ -24,7 +26,7 @@ def vdosDyn(dyn: np.ndarray, conv: float = 15.63) -> (np.ndarray, np.ndarray):
 
     # Diagonalization
     freqk, vibrations = np.linalg.eigh(dyn)
-    freqk: np.ndarray = freqk * conv
+    freqk: np.ndarray = np.sqrt(freqk) * conv
     vibrations: np.ndarray = vibrations.T.reshape( len(freqk), len(freqk) // 3, 3 )
 
     # Remove nan
@@ -38,8 +40,8 @@ def dynamical(atoms: Atoms, h: float = 1e-5):
     """ Get the Dynamical (Hessian * sqrt(m1*m2)) """
     """ for a given set of atoms. """
 
-    mtensor: np.ndarray = 1. / np.array([ (m, m, m) for m in atoms.get_masses() ]).reshape((atoms.positions.size, 1))
-    mmask: np.ndarray = np.sqrt(mtensor @ mtensor.T)
+    mtensor: np.ndarray = np.array([ (m, m, m) for m in atoms.get_masses() ]).reshape((atoms.positions.size, 1))
+    mmask: np.ndarray = 1. / np.sqrt(mtensor @ mtensor.T)
     H: np.ndarray = hessian(atoms, h)
     return H * mmask
 
@@ -60,8 +62,8 @@ def hessian(atoms: Atoms, h: float = 1e-5):
 
 
 def hessRow(atoms: Atoms, i: int, h: float = 1e-5) -> np.ndarray:
-    """ Get the ith row of the Hessian """
-    """ for a given set of atoms """
+    """ Find the ith row of the Hessian """
+    """ for a given set of atoms. """
 
     # Shorthand
     apos: np.ndarray = atoms.positions
@@ -78,4 +80,5 @@ def hessRow(atoms: Atoms, i: int, h: float = 1e-5) -> np.ndarray:
     apos[i // 3, i % 3] += h
     D: np.ndarray = (fp - fn) / (2. * h)
 
-    return D
+    return D.flatten()
+

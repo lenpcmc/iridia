@@ -13,4 +13,9 @@ from .pqeq.energy import *
 from .pqeq.force import *
 
 from .vibrations.vdos import *
+from .vibrations.vparts import *
 from .vibrations.vplot import *
+
+from .absorb.cross import *
+from .absorb.dipoles import *
+from .absorb.dSpectrum import *

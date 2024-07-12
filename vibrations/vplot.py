@@ -1,6 +1,5 @@
 from .main import *
 
-
 def vplot(freqk: np.ndarray, width: int = 100, title: str = "", save: str = False) -> None:
     """ Plot the Vibrational Density of States """
     """ given a set of frequencies. """

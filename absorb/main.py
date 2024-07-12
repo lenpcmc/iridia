@@ -17,3 +17,10 @@ enum = lambda x, d = "" : enumerate(tqdm(x, d))
 from .. import root, rroot, aroot, proot
 from ..build import *
 
+
+def extend(v: np.ndarray, dim: int) -> np.ndarray:
+    v = np.array(v)
+    for i in range(dim - v.ndim):
+        v = np.stack([v], axis = -1)
+    return v
+
