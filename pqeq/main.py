@@ -12,13 +12,13 @@ from time import perf_counter
 from tqdm import tqdm
 enum = lambda x, d = "": enumerate(tqdm(x, d))
 
-from .. import root, rroot, aroot, proot
+from .. import ir_root
 from ..build import *
 
 
 def loadParams(n: int = 0, eV: bool = True):
     # Load Data
-    with open(f"{proot}/PQEqParams{n}.csv") as infile:
+    with open(f"{ir_root}/pqeq/params/PQEqParams{n}.csv") as infile:
         indata: list[str] = [ line.strip().split(',') for line in infile if '#' not in line ]
 
     # Partition
@@ -46,7 +46,7 @@ def alpha(elem: str, n: int = 0) -> float:
     return 0.5 * lambda_pqeq / Rk**2
 
 
+#def Tap(r, rcut = 12.5):
+#    A = [1, 0, 0, 0, -35, 84, -70, 20]
+#    return np.sum([ ( -r / rcut )**a for a in A ])
 
-def Tap(r, rcut = 12.5):
-    A = [1, 0, 0, 0, -35, 84, -70, 20]
-    return np.sum([ ( -r / rcut )**a for a in A ])

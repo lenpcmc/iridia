@@ -17,40 +17,6 @@ def absorbance(w: float, k: float, ddm: float, y: float = 0.25) -> float:
     absCoeff: float = pi / ( 3. * ep0 * c )
     broadening: np.ndarray = y / ((k - w)**2 + y**2)
 
+    #return absCoeff * ddm2 * broadening
     return np.sum( absCoeff * ddm2 * broadening, axis = 0 )
 
-
-'''
-from ..pqeq.charge import pqeq
-from ..vibrations.vdos import dynamical, vdosDyn
-from .dSpectrum import *
-from ..visualize.vspect import *
-from vdos import vdos
-from psvector import crossIR, dipolePartials, dipole as dp
-from rruffIR import *
-
-spectrum, rs = rruffIR("resources/rruff/processed/data/Wollastonite__R040008-1__Infrared__Infrared_Data_Processed__1001.txt")
-spectrum *= 0.03
-
-#structure, atoms = buildArray("resources/cifs/wollastonite.cif", 2, 0.001)
-atoms = ase_read("resources/cifs/wollastonite.cif")
-
-relaxer = StructOptimizer(optimizer_class = "LBFGS")
-x = relaxer.relax(atoms).get("trajectory").atoms
-
-q = pqeq(atoms)
-atoms.get_charges = lambda: q
-
-dyn = dynamical(atoms.copy())
-#dyn = np.load("resources/arrays/wollastonite.npy")
-freqk, vibrations = vdosDyn(dyn)
-
-ddm = dipoleSpectrumAtoms(atoms, vibrations)
-ds = absorbance(spectrum, freqk, ddm)
-
-fig,ax = plt.subplots()
-spectrumPlot(ax, spectrum, ds, label = "iridia")
-spectrumPlot(ax, spectrum, rs, label = "exp", invert = True)
-plt.legend()
-plt.show()
-'''

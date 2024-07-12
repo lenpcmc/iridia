@@ -4,7 +4,7 @@ from .dipoles import *
 from ..vibrations import *
 
 def main():
-    atoms = ase_read(f"{aroot}/wollastonite.cif")
+    atoms = ase_read(f"{ir_root}/atoms/wollastonite.cif")
     x = iridia(atoms)
     print(f"{x.abs(1) = }")
     x.abs(1)

@@ -1,55 +1,33 @@
-import numpy as np
-import matplotlib.pyplot as plt
+from .main import *
 
-from pymatgen.io.ase import MSONAtoms
-from pymatgen.core import Structure
-from ase import Atoms
-from ase.io import read as ase_read
+from typing import Union
+from chgnet.model import StructOptimizer
 
-from chgnet.model import CHGNet, StructOptimizer
+from io import StringIO
+import sys
 
-def main():
-    atoms = buildArray("betaCristobalite.cif", [20,20,20])
-    view(atoms)
-    return
+def buildNumber(filename: str, numAtoms: int = 1000, format: str = None, **kwargs) -> tuple[Structure, Atoms]:
+    atoms: Atoms = ase_read(filename, format = format)
+    rnum: int = int(np.cbrt( numAtoms / len(atoms) )) + 1
 
+    ratoms: Atoms = relax(atoms, **kwargs)[1]
+    rratoms: Atoms = atoms * rnum
 
-def buildNumber(filename: str, numAtoms: int = 1000, fmax: float = 0.01, steps: int = 2500) -> Atoms:
-    #chgnet = CHGNet.load()
-    structure = Structure.from_file(filename)
-    relaxed = relaxStruct(structure, fmax, steps)
-    relaxedStruct = relaxed["final_structure"]
-    relaxedAtoms = relaxed["trajectory"].atoms
-
-    repeatNumber = int(np.cbrt(numAtoms/len(relaxedStruct))) + 1
-    repeatStruct = relaxedStruct.make_supercell(repeatNumber)
-    repeatAtoms = relaxedAtoms * repeatNumber
-    return repeatStruct, repeatAtoms
+    return relax(rratoms, **kwargs)
 
 
-def buildArray(filename: str, repeat: int = 1, fmax: float = 0.01, steps: int = 2500, optimizer = "BFGS") -> Atoms:
-    #chgnet = CHGNet.load()
-    structure = Structure.from_file(filename)
-    relaxed = relaxStruct(structure, fmax, steps)
-    relaxedAtoms = relaxed["trajectory"].atoms
-    relaxedStruct = relaxed["final_structure"]
-    repeatAtoms = relaxedAtoms * repeat
-    repeatStruct = relaxedStruct.make_supercell(repeat)
-    return repeatStruct, repeatAtoms
+def buildArray(filename: str, repeat: int = 1, format: str = None, **kwargs) -> tuple[Structure, Atoms]:
+    atoms: Atoms = ase_read(filename, format = format)
+    ratoms: Atoms = relax(atoms, **kwargs)[1]
+    rratoms: Atoms = ratoms * repeat
+    return relax(rratoms, **kwargs)
 
 
-def relaxStruct(structure: Structure, fmax: float = 0.01, steps: int = 2500, save = False) -> dict[str]:
-    relaxer = StructOptimizer()
-    result = relaxer.relax(structure, fmax = fmax, steps = steps)
-    
-    #print(f"Relaxed structure {result['final_structure']}")
-    #print(f"Relaxed total energy {result['trajectory'].energies[-1]} eV")
+def relax(atoms: Union[Atoms, Structure], opt: str = "LBFGS", fmax: float = 0.0025, steps: int = 2500, **kwargs) -> tuple[Structure, Atoms]:
 
-    if bool(save):
-        pass
+    # Relax
+    relaxer = StructOptimizer(optimizer_class = opt)
+    result: dict[str] = relaxer.relax(atoms, fmax = fmax, steps = steps, **kwargs)
 
-    return result
+    return result.get("final_structure"), result.get("trajectory").atoms
 
-
-if __name__ == "__main__":
-    main()

@@ -1,15 +1,5 @@
 from .main import *
 
-def main():
-    from .vplot import vplot
-    structure, atoms = buildArray(f"{aroot}/wollastonite.cif", 1, fmax = 1)
-    structure, atoms = buildArray(f"{aroot}/danburite.cif", 3, fmax = 1)
-    structure, atoms = buildArray(f"{aroot}/betaCristobalite.cif", [3,2,2], fmax = 1)
-    freqk, vibrations = vdos(atoms)
-    vplot(freqk, width = 30)
-    return
-
-
 def vdos(atoms: Atoms, conv: float = 15.63, h: float = 1e-5) -> (np.ndarray, np.ndarray):
     """ Calculate the frequencies and vibrations of the """
     """ phonons pathways for a given set of atoms. """
@@ -34,51 +24,4 @@ def vdosDyn(dyn: np.ndarray, conv: float = 15.63) -> (np.ndarray, np.ndarray):
     np.nan_to_num(vibrations, 0.)
 
     return freqk, vibrations
-
-
-def dynamical(atoms: Atoms, h: float = 1e-5):
-    """ Get the Dynamical (Hessian * sqrt(m1*m2)) """
-    """ for a given set of atoms. """
-
-    mtensor: np.ndarray = np.array([ (m, m, m) for m in atoms.get_masses() ]).reshape((atoms.positions.size, 1))
-    mmask: np.ndarray = 1. / np.sqrt(mtensor @ mtensor.T)
-    H: np.ndarray = hessian(atoms, h)
-    return H * mmask
-
-
-def hessian(atoms: Atoms, h: float = 1e-5):
-    """ Get the Hessian (dE/dn,dm) for """
-    """ a given set of atoms. """
-
-    # Ensure Calculator
-    if (atoms.calc is None):
-        atoms.calc = CHGNetCalculator()
-
-    # Allocate and Fill
-    H: np.ndarray = np.array([ hessRow(atoms, i, h) for i in trange( 3*len(atoms), desc = f"Solving Dynamical Matrix" ) ])
-
-    # Ensure Symmetry over Numeric Precision
-    return -1. * (H + H.T) / 2.
-
-
-def hessRow(atoms: Atoms, i: int, h: float = 1e-5) -> np.ndarray:
-    """ Find the ith row of the Hessian """
-    """ for a given set of atoms. """
-
-    # Shorthand
-    apos: np.ndarray = atoms.positions
-    
-    # Finite Forward Difference
-    apos[i // 3, i % 3] += h
-    fp: np.ndarray = atoms.get_forces().flatten()
-
-    # Finite Backward Difference
-    apos[i // 3, i % 3] -= h * 2.
-    fn: np.ndarray = atoms.get_forces().flatten()
-
-    # Central Difference Derivative
-    apos[i // 3, i % 3] += h
-    D: np.ndarray = (fp - fn) / (2. * h)
-
-    return D.flatten()
 

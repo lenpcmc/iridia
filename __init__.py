@@ -1,21 +1,10 @@
 from os.path import dirname, abspath
-root: str = dirname(abspath(__file__))
-
-rroot: str = f"{root}/resources"
-aroot: str = f"{rroot}/atoms"
-proot: str = f"{rroot}/params"
+ir_root: str = dirname(abspath(__file__))
 
 from .build import *
 
-from .pqeq.pqeq import *
-from .pqeq.charge import *
-from .pqeq.energy import *
-from .pqeq.force import *
+from .pqeq import *
+from .vibrations import *
+from .absorb import *
 
-from .vibrations.vdos import *
-from .vibrations.vparts import *
-from .vibrations.vplot import *
-
-from .absorb.cross import *
-from .absorb.dipoles import *
-from .absorb.dSpectrum import *
+from .visualize import *

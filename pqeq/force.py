@@ -101,7 +101,6 @@ def shellPositions(positions: np.ndarray[float], spositions: np.ndarray[float] =
     # Core-Shell Forces
     risjs: np.ndarray = get_distances(spos, spos, cell, pbc)[0]
     risjc: np.ndarray = get_distances(spos, pos, cell, pbc)[0]
-    print(f"{risjs.shape = }")
 
     Fisjs: np.ndarray = -1. * dC(risjs, elem, n = n) * np.stack([ Z*Z.T ], axis = -1)
     Fisjc: np.ndarray = -1. * dC(risjc, elem, n = n) * np.stack([ Z*q.T ], axis = -1)

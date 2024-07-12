@@ -1,0 +1,4 @@
+*.npy
+*.data
+*.traj
+nohup.out

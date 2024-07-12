@@ -1,15 +1,12 @@
 from .main import *
 
-from ase.geometry import get_distances
+from ase.calculators.calculator import Calculator, all_changes, all_properties
 
 from typing import Callable
 from numpy.typing import ArrayLike
 
-from scipy.special import erf
+#from scipy.special import erf
 
-from ase import Atoms
-from ase.calculators.calculator import Calculator, all_changes, all_properties
-from ase.cell import Cell
 
 
 def main():

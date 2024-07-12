@@ -4,23 +4,6 @@ from .force import *
 
 from scipy.sparse.linalg import spilu, LinearOperator, cg as ConjugateGradient
 
-
-def main():
-    atoms = ase_read(f"{root}/resources/atoms/W3O9.sdf")
-    structure, atoms = buildArray(f"{root}/resources/atoms/betaCristobalite.cif", 5)
-    #structure, atoms = buildArray("NaCl.cif", [5,5,5])
-    #atoms = ase_read("cyclohexane.sdf")
-    atoms.get_charges = lambda: np.zeros(len(atoms))
-    for i in range(3):
-        q = pqeq(atoms, 0)
-        atoms.get_charges = lambda: q
-        plt.plot(range(len(q)), q)
-    print("\n".join([ f"{atoms.get_chemical_symbols()[i]}: {q[i]}" for i in range(len(atoms)) ]))
-    print(f"{q.shape =  }")
-    plt.show()
-    return
-
-
 def pqeq(atoms: Atoms, n: int = 0) -> np.ndarray[float]:
     #
     pos: np.ndarray = atoms.positions
@@ -70,8 +53,4 @@ def PQEq(positions: np.ndarray[float], spositions: np.ndarray[float], elem: list
     
     q: np.ndarray = qt - mu * qh
     return q
-
-
-if __name__ == "__main__":
-    main()
 

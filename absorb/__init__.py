@@ -1,4 +1,5 @@
 from .ir import *
 from .cross import *
 from .dipoles import *
-from .dSpectrum import *
+from .dspectrum import *
+from .vspect import *
