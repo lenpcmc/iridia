@@ -10,14 +10,7 @@ from chgnet.model import CHGNet, CHGNetCalculator
 
 from time import perf_counter
 from tqdm import tqdm, trange
-enum = lambda x, d = "" : enumerate(tqdm(x, d))
 
-from .. import ir_root
+from .. import ir_root, enum, extend
 from ..build import *
-
-
-def extend(v: np.ndarray, dim: int) -> np.ndarray:
-    v = np.array(v)
-    v.shape += tuple(np.ones( dim - v.ndim, dtype = int ))
-    return v
 

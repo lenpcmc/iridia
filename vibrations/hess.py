@@ -2,22 +2,23 @@ from .main import *
 
 def dynamical(
         atoms: Atoms,
-        verbose: str = "Solving Hessian Matrix",
-        h: float = 1e-5,
+        verbose: str = "Solving Dynamical Matrix",
+        **kwargs,
     ) -> np.ndarray:
     """ Get the Dynamical (Hessian * 1/sqrt(m1*m2)) """
     """ for a given set of atoms. """
 
     mtensor: np.ndarray = np.array([ (m, m, m) for m in atoms.get_masses() ]).reshape((atoms.positions.size, 1))
     mmask: np.ndarray = 1. / np.sqrt(mtensor @ mtensor.T)
-    H: np.ndarray = hessian(atoms, h)
+    H: np.ndarray = hessian(atoms, **kwargs)
+
     return H * mmask
 
 
 def hessian(
         atoms: Atoms,
         verbose: str = "Solving Hessian Matrix",
-        h: float = 1e-5,
+        **kwargs,
     ) -> np.ndarray:
     """ Get the Hessian (dE/dn,dm) for a given """
     """ set of atoms. """
@@ -28,7 +29,8 @@ def hessian(
 
     # Allocate and Fill
     H: np.ndarray = np.array([
-        hessRow(atoms, i, h) for i in trange( 3*len(atoms), desc = f"Solving Dynamical Matrix" ) ])
+        hessRow(atoms, i, **kwargs) for i in trange( 3*len(atoms), desc = f"{verbose}" )
+    ])
 
     # Ensure Symmetry over Numeric Precision
     return -1. * (H + H.T) / 2.
@@ -39,7 +41,7 @@ def hessRow(atoms: Atoms, i: int, method: str = "central", h: float = 1e-5) -> n
     """ for a given set of atoms. """
 
     # Shorthand
-    apos: np.ndarray = atoms.positions.copy()
+    apos: np.ndarray = atoms.positions
     
     # Finite Forward Difference
     if (method == "foward"):

@@ -6,8 +6,7 @@ from ase.io import read as ase_read
 
 from time import perf_counter
 from tqdm import tqdm, trange
-enum = lambda x, d = "": enumerate(tqdm(x, d))
 
-from .. import ir_root, extend
+from .. import ir_root, enum, extend
 from ..build import *
 

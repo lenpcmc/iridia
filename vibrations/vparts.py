@@ -13,6 +13,7 @@ def categorize(
     
     assign: list = [ choose(a) for a in atoms ]
     cmask: np.ndarray = np.array([ [ assign[i] == cat for i,a in enumerate(assign) ] for cat in np.unique(assign) ])
+
     return cmask
 
 
@@ -25,5 +26,6 @@ def categoryParts(
     parts: np.ndarray = extend(vparts(vibrations), 3)
     cats: np.ndarray = extend(categorize(atoms, choose), 3).swapaxes(0,2)
     cparts: np.ndarray = parts * cats
-    return np.sum(cparts, axis = 1, keepdims = True)
+
+    return np.linalg.norm(cparts, axis = 1, keepdims = True)**2
 

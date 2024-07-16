@@ -18,5 +18,5 @@ def absorbance(w: float, k: float, ddm: float, y: float = 0.25) -> float:
     broadening: np.ndarray = y / ((k - w)**2 + y**2)
 
     #return absCoeff * ddm2 * broadening
-    return np.sum( absCoeff * ddm2 * broadening, axis = 0 )
+    return np.squeeze(np.sum( absCoeff * ddm2 * broadening, axis = 0 ))
 

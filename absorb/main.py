@@ -2,18 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from ase import Atoms
-from ase.io import read as ase_read
+from ase.io import read as ase_read, write as ase_write
 
 from time import perf_counter
 from tqdm import tqdm, trange
-enum = lambda x, d = "" : enumerate(tqdm(x, d))
 
-from .. import ir_root
+from .. import ir_root, enum, extend
 from ..build import *
-
-
-def extend(v: np.ndarray, dim: int) -> np.ndarray:
-    v = np.array(v)
-    v.shape += tuple(np.ones( dim - v.ndim, dtype = int ))
-    return v
 

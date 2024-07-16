@@ -5,13 +5,14 @@ def vplot(
         width: int = 100,
         label: str = None,
         save: str = False,
+        **kwargs,
     ) -> None:
     """ Plot the Vibrational Density of States """
     """ given a set of frequencies. """
 
     # Init
     fig,ax = plt.subplots()
-    vdosPlot(ax, freqk, width, *label)
+    vdosPlot(ax, freqk, width, label, **kwargs)
     
     # Directive
     plt.savefig(save) if bool(save) else plt.show()
@@ -27,6 +28,7 @@ def vdosPlot(
         title: str = "",
         xlabel: str = r"$\nu$ [THz]",
         ylabel: str = r"VDOS [A.U.]",
+        **kwargs,
     ) -> None:
 
     """ Plot a histogram of the Vibrational Density """
@@ -44,7 +46,7 @@ def vdosPlot(
     x,y = vdosDist(freqk, width)
     y *= len(freqk)
 
-    ax.plot(x, y, label = label)
+    ax.plot(x[1:], y[1:], label = label)
     ax.legend() if bool(label) else None
 
     return

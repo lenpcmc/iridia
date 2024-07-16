@@ -3,12 +3,13 @@ from .main import *
 def vspect(
         x: np.ndarray,
         spectrum: np.ndarray,
-        *label: tuple[str],
+        *label: str,
         invert: bool = True,
         conv: float = 33.36,
+        **kwargs,
     ) -> None:
     fig,ax = plt.subplots()
-    spectrumPlot(ax, x, spectrum, label, invert = invert, conv = conv)
+    spectrumPlot(ax, x, spectrum, label, invert = invert, conv = conv, **kwargs)
     plt.legend()
     plt.show()
     return
@@ -18,11 +19,12 @@ def spectrumPlot(
         ax: plt.Axes,
         x: np.ndarray,
         spectrum: np.ndarray,
-        *label: tuple[str],
+        *label: str,
         invert: bool = False,
         conv: float = 33.36,
         xlabel = r"Wavenumbers [cm$^{-1}$]",
         ylabel = r"Abs",
+        **kwargs,
     ) -> None:
     
     # Init
@@ -33,7 +35,7 @@ def spectrumPlot(
     # Plot
     for i,s in enumerate(S):
         lab = label[i] if i < len(label) else ""
-        ax.plot(x, s, label = lab)
+        ax.plot(x, s, label = lab, linewidth = 0.5)
     
     # X-Axis
     ax.set_xlabel(xlabel)
