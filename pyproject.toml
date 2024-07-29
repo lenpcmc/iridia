@@ -11,10 +11,21 @@ maintainers = [
 description = "A toolkit for predicting IR Absorbance Spectra"
 readme = "README.md"
 requires-python = ">=3.7"
+dependencies = [
+  "ase >= 3.23.0",
+  "cython >= 3",
+  "numpy >= 1.26, < 2.0",
+]
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+autohessian = [
+  "chgnet >= 3.0",
+  "torch <= 1.11.0",
 ]
 
 [project.urls]
