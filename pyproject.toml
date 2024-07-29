@@ -2,8 +2,8 @@
 name = "iridia"
 version = "1.0"
 authors = [
-  { name = "Lennon McClanahan", email = "lenpcmc@gmail.com" }
-  { name = "Collin Wilkinson", email = "wilkinsonc@alfred.edu" }
+  { name = "Lennon McClanahan", email = "lenpcmc@gmail.com" },
+  { name = "Collin Wilkinson", email = "wilkinsonc@alfred.edu" },
 ]
 maintainers = [
   { name = "Lennon McClanahan", email = "lenpcmc@gmail.com" }
