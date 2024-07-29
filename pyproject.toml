@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "iridia"
 version = "1.0"
@@ -10,7 +14,7 @@ maintainers = [
 ]
 description = "A toolkit for predicting IR Absorbance Spectra"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">= 3.7"
 dependencies = [
   "ase >= 3.23.0",
   "cython >= 3",
@@ -24,7 +28,7 @@ classifiers = [
 
 [project.optional-dependencies]
 autohessian = [
-  "chgnet >= 3.0",
+  "chgnet >= 3.0.0",
   "torch <= 1.11.0",
 ]
 
