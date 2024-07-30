@@ -19,7 +19,7 @@ dependencies = [
   "ase >= 3.23.0",
   "cython >= 3",
   "numpy >= 1.26, < 2.0",
-  "chgnet >= 3.0.0",
+  "chgnet >= 0.3.0",
   "torch <= 1.11.0",
 ]
 classifiers = [
