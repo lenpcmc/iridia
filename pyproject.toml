@@ -20,7 +20,7 @@ dependencies = [
   "cython >= 3",
   "numpy >= 1.26, < 2.0",
   "chgnet >= 0.3.0",
-  "torch <= 1.11.0",
+  "torch >= 1.11.0",
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
@@ -35,5 +35,5 @@ Issues = "https://github.com/lenpcmc/iridia/issues"
 [tool.setuptools.packages]
 find = { include = ["iridia*"] }
 
-[tools.setuptools.package-data]
+[tool.setuptools.package-data]
 "*" = ["*.csv"]
