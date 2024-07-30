@@ -19,6 +19,8 @@ dependencies = [
   "ase >= 3.23.0",
   "cython >= 3",
   "numpy >= 1.26, < 2.0",
+  "chgnet >= 3.0.0",
+  "torch <= 1.11.0",
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
@@ -26,12 +28,12 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-[project.optional-dependencies]
-autohessian = [
-  "chgnet >= 3.0.0",
-  "torch <= 1.11.0",
-]
-
 [project.urls]
 Homepage = "https://github.com/lenpcmc/iridia"
 Issues = "https://github.com/lenpcmc/iridia/issues"
+
+[tool.setuptools.packages]
+find = { include = ["iridia*"] }
+
+[tools.setuptools.package-data]
+"*" = ["*.csv"]
