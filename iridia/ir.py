@@ -135,7 +135,8 @@ class iridia:
     def get_dynamical(self, **kwargs) -> np.ndarray:
         print(f"{self.atoms.calc = }")
         if (isinstance(self.atoms.calc, CHGNetCalculator) or self.atoms.calc is None):
-            self.dyn = dynamical(self.atoms, self.verbose, autohessian, **kwargs)
+            #self.dyn = dynamical(self.atoms, self.verbose, autohessian, **kwargs)
+            self.dyn = dynamical(self.atoms, self.verbose, hessian, **kwargs)
         else:
             self.dyn = dynamical(self.atoms, self.verbose, hessian, **kwargs)
         return self.dyn.copy()
