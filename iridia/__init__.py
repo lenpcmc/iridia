@@ -1,10 +1,13 @@
 from os.path import dirname, abspath
 ir_root: str = dirname(abspath(__file__))
 
-from .build import *
+from . import ir
 
-from .pqeq import *
-from .vibrations import *
-from .absorb import *
+from . import pqeq
+from . import vibrations
+from . import absorb
 
-from .visualize import *
+from . import build
+from . import visualize
+
+__version__: str = "1.0.0"

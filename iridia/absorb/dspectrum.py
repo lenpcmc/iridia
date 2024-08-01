@@ -20,7 +20,7 @@ def dipoleSpectrumAtoms(
 def dipoleSpectrum(
         positions: np.ndarray,
         spectrumDeltas: np.ndarray,
-        charge: Callable[np.ndarray],
+        charge: Callable[[np.ndarray], np.ndarray],
         verbose: str = "Computing Vibrational Dipole Partials",
         **kwargs,
     ) -> np.ndarray:

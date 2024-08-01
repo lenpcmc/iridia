@@ -1,19 +1,6 @@
 from .main import *
 
-def dynamical(
-        atoms: Atoms,
-        verbose: str = "Solving Dynamical Matrix",
-        **kwargs,
-    ) -> np.ndarray:
-    """ Get the Dynamical (Hessian * 1/sqrt(m1*m2)) """
-    """ for a given set of atoms. """
-
-    mtensor: np.ndarray = np.array([ (m, m, m) for m in atoms.get_masses() ]).reshape((atoms.positions.size, 1))
-    mmask: np.ndarray = 1. / np.sqrt(mtensor @ mtensor.T)
-    H: np.ndarray = hessian(atoms, **kwargs)
-
-    return H * mmask
-
+from collections.abc import Callable
 
 def hessian(
         atoms: Atoms,
@@ -74,4 +61,20 @@ def hessRow(atoms: Atoms, i: int, method: str = "central", h: float = 1e-5) -> n
         D: np.ndarray = (fp - fn) / (2. * h)
 
     return D
+
+
+def dynamical(
+        atoms: Atoms,
+        verbose: str = "Solving Dynamical Matrix",
+        hfunc: Callable[[Atoms], np.ndarray] = hessian,
+        **kwargs,
+    ) -> np.ndarray:
+    """ Get the Dynamical (Hessian * 1/sqrt(m1*m2)) """
+    """ for a given set of atoms. """
+
+    mtensor: np.ndarray = np.array([ (m, m, m) for m in atoms.get_masses() ]).reshape((atoms.positions.size, 1))
+    mmask: np.ndarray = 1. / np.sqrt(mtensor @ mtensor.T)
+    H: np.ndarray = hfunc(atoms, **kwargs)
+
+    return H * mmask
 

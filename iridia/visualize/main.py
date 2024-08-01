@@ -7,6 +7,7 @@ from ase.io import read as ase_read
 from time import perf_counter
 from tqdm import tqdm, trange
 
-from .. import ir_root, enum, extend
+from .. import ir_root
+from ..main import enum, extend
 from ..build import *
 

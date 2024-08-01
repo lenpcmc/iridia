@@ -3,19 +3,22 @@ from .main import *
 from .absorb.cross import *
 from .absorb.dipoles import *
 from .absorb.dspectrum import *
+from .absorb.vspect import *
 
-from .vibrations import *
+from .vibrations.hess import *
+from .vibrations.vdos import *
+from .vibrations.vparts import *
+from .vibrations.vplot import *
+from .vibrations.autohess import *
 
 from .pqeq.pqeq import *
 from .pqeq.charge import *
 
 from .visualize import *
 
-from collections.abc import Callable
-from typing import Any
-
 from pymatgen.io.ase import AseAtomsAdaptor
 
+from collections.abc import Callable
 
 def main():
     x = iridia()
@@ -32,10 +35,9 @@ class iridia:
 
     def __init__(self, atoms = None, **kwargs) -> None:
         
-        atype = type(atoms)
-        if issubclass(atype, Atoms):
+        if isinstance(atoms, Atoms):
             self.atoms = atoms
-        elif atype == str:
+        elif isinstance(atoms, str):
             self.atoms = self.read(atoms, **kwargs)
         
         for attr, val in kwargs.items():
@@ -46,10 +48,26 @@ class iridia:
         return
 
 
-    def read(self, filename: str, format = None, relax = True, **kwargs) -> None:
+    def read(
+            self,
+            filename: str,
+            format = None,
+            relax = True,
+            numAtoms: int = 1000,
+            repeat: int = None,
+            **kwargs,
+        ) -> None:
+        # Read
         self.atoms = ase_read(filename, format = format)
         self.relax(**kwargs) if relax else 0.
-        return self.atoms
+
+        # Build
+        if repeat:
+            self.atoms = self.atoms * repeat
+        elif numAtoms:
+            rnum: int = int(np.cbrt( numAtoms / len(self.atoms) )) + 1
+            self.atoms = self.atoms * rnum
+        return self.relax(**kwargs) if relax else 0.
 
 
     def write(self, filename: str, **kwargs) -> None:
@@ -57,9 +75,9 @@ class iridia:
         return
 
 
-    def relax(self, opt: str = "LBFGS", fmax: float = 0.01, steps: int = 500, **kwargs) -> Atoms:
+    def relax(self, opt: str = "LBFGS", **kwargs) -> Atoms:
         
-        rlx = relax(self.atoms, opt, fmax, steps, **kwargs)
+        rlx = relax(self.atoms, opt, **kwargs)
 
         self.structure = rlx[0]
         self.atoms = rlx[1]
@@ -115,7 +133,11 @@ class iridia:
 
 
     def get_dynamical(self, **kwargs) -> np.ndarray:
-        self.dyn = dynamical(self.atoms, self.verbose, **kwargs)
+        print(f"{self.atoms.calc = }")
+        if (isinstance(self.atoms.calc, CHGNetCalculator) or self.atoms.calc is None):
+            self.dyn = dynamical(self.atoms, self.verbose, autohessian, **kwargs)
+        else:
+            self.dyn = dynamical(self.atoms, self.verbose, hessian, **kwargs)
         return self.dyn.copy()
 
 
@@ -147,12 +169,21 @@ class iridia:
     
 
     @ensure("vibrations")
-    def get_cparts(self, choose: Callable[Atom] = lambda a: 0., **kwargs) -> np.ndarray:
+    def get_cparts(
+            self,
+            choose: Callable[[Atoms], list] = lambda atoms: np.zeros(len(atoms)),
+            **kwargs,
+        ) -> np.ndarray:
         return categoryParts(self.atoms, self.vibrations, choose)
 
 
     @ensure("freqk", "vibrations", "ddm")
-    def absorbance(self, w: float, y: float = 0.25, **kwargs) -> float:
+    def absorbance(
+            self,
+            w: float = np.linspace(60, 5, 2000),
+            y: float = 0.25,
+            **kwargs,
+        ) -> float:
         cparts: np.ndarray = self.get_cparts(**kwargs)
         return absorbance(w, self.freqk, self.ddm * np.sqrt(cparts), y)
 
@@ -162,7 +193,7 @@ class iridia:
         #fig,ax = plt.subplots()
         #spectrumPlot(ax, w, self.abs(w, **kwargs), **kwargs)
         #plt.show()
-        vspect(w, self.abs(w, **kwargs), **kwargs)
+        splot(w, self.absorbance(w, **kwargs), **kwargs)
         return
 
 

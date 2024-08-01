@@ -1,5 +1,4 @@
 from .main import *
-from ase import Atom
 from collections.abc import Callable
 
 def vparts(vibrations: np.ndarray) -> np.ndarray:
@@ -8,10 +7,10 @@ def vparts(vibrations: np.ndarray) -> np.ndarray:
 
 def categorize(
         atoms: Atoms,
-        choose: Callable[Atom] = lambda a: a.number,
+        choose: Callable[[Atoms], list] = lambda a: a.number,
     ) -> np.ndarray[bool]:
     
-    assign: list = [ choose(a) for a in atoms ]
+    assign: list = choose(atoms)
     cmask: np.ndarray = np.array([ [ assign[i] == cat for i,a in enumerate(assign) ] for cat in np.unique(assign) ])
 
     return cmask
@@ -20,7 +19,7 @@ def categorize(
 def categoryParts(
         atoms: Atoms,
         vibrations: np.ndarray,
-        choose: Callable[Atom] = lambda a: a.number,
+        choose: Callable[[Atoms], list] = lambda a: a.get_chemical_symbols(),
     ) -> np.ndarray:
 
     parts: np.ndarray = extend(vparts(vibrations), 3)

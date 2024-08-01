@@ -115,15 +115,14 @@ def shellPositions(positions: np.ndarray[float], spositions: np.ndarray[float] =
     
     # Core-Shell Charges
     Z: np.ndarray = np.array([ [params["Z", e]] for e in elem ])
-    qc: np.ndarray = np.array([ charges ]).T + Z
-    qs: np.ndarray = -1. * qc
+    q: np.ndarray = np.array([ charges ]).T + Z
 
     # Core-Shell Forces
     risjs: np.ndarray = get_distances(spos, spos, cell, pbc)[0]
     risjc: np.ndarray = get_distances(spos, pos, cell, pbc)[0]
 
-    Fisjs: np.ndarray = -1. * dC(risjs, elem, n = n) * np.stack([ qs*qs.T ], axis = -1)
-    Fisjc: np.ndarray = -1. * dC(risjc, elem, n = n) * np.stack([ qs*qc.T ], axis = -1)
+    Fisjs: np.ndarray = -1. * dC(risjs, elem, n = n) * np.stack([ Z*Z.T ], axis = -1)
+    Fisjc: np.ndarray = -1. * dC(risjc, elem, n = n) * np.stack([ Z*q.T ], axis = -1)
 
     # Intra Atomic Interactions
     idx = np.arange(risjc.shape[0])

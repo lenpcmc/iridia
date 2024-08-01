@@ -52,7 +52,13 @@ def atomDipolePartial(atoms: Atoms, delta: np.ndarray, method: str = "central", 
     return D
 
 
-def dipolePartial(positions: np.ndarray, delta: np.ndarray, charge: Callable[np.ndarray], method: str = "central", h: float = 1e-5) -> np.ndarray:
+def dipolePartial(
+        positions: np.ndarray,
+        delta: np.ndarray,
+        charge: Callable[[np.ndarray], np.ndarray],
+        method: str = "central",
+        h: float = 1e-5,
+    ) -> np.ndarray:
 
     # Init
     pos: np.ndarray = positions.copy()

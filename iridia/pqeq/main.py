@@ -12,7 +12,8 @@ from tqdm import tqdm
 
 from . import pqeq_root
 
-from .. import enum
+from .. import ir_root
+from ..main import enum, extend
 from ..build import *
 
 

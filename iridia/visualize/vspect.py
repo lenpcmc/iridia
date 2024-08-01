@@ -17,10 +17,10 @@ def splot(
         conv: float = 33.36,
         **kwargs,
     ) -> None:
-    fig,ax = plt.subplots()
-    spectrumPlot(ax, x, spectrum, label, invert = invert, conv = conv, **kwargs)
-    plt.legend()
-    plt.show()
+    fig,ax = spectrumPlot(invert, **kwargs)
+    ax.plot(x * conv, spectrum, label = label, **kwargs)
+    ax.legend()
+    fig.show()
     return
 
 

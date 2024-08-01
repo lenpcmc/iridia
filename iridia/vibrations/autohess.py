@@ -1,18 +1,11 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from time import time, perf_counter
-
-from ase import Atoms
-from ase.io import read as ase_read, write as ase_write
-from pymatgen.core import Structure
-from pymatgen.io.ase import AseAtomsAdaptor
+from .main import *
 
 import torch
 from chgnet.model import CHGNet, CHGNetCalculator
 from chgnet.graph import CrystalGraph, CrystalGraphConverter
+from pymatgen.io.ase import AseAtomsAdaptor
 
-from iridia.vibrations.hess import *
-from iridia.vibrations.vdos import *
+from typing import Union
 
 def main():
     chgnet = CHGNet()
@@ -44,11 +37,12 @@ def main():
     return
 
 
-def auto_hessian(atoms: Atoms | Structure | CrystalGraph, model = None):
+def autohessian(atoms: Union[Atoms, Structure, CrystalGraph], model = None):
     # Init
     chgnet = atoms.calc.model if model is None else model
 
-    assert isinstance(atoms, Atoms | Structure | CrystalGraph)
+    #assert isinstance(atoms, Atoms | Structure | CrystalGraph)
+    assert isinstance(atoms, Atoms) or isinstance(atoms, Structure) or isinstance(atoms, CrystalGraph)
     if isinstance(atoms, Atoms):
         adaptor = AseAtomsAdaptor()
         converter = CrystalGraphConverter()
@@ -68,10 +62,11 @@ def auto_hessian(atoms: Atoms | Structure | CrystalGraph, model = None):
         graph = atoms
         N = len(graph.atomic_number)
 
-
     def compute_energy(graph_positions):
         graph.atom_frac_coord = graph_positions
         return chgnet.forward([graph], task = 'e').get('e')
 
-    hessian = torch.autograd.functional.hessian(compute_energy, graph.atom_frac_coord)
+    hessian = torch.autograd.functional.hessian(compute_energy, graph.atom_frac_coord @ graph.lattice)
+    hessian = torch.autograd.grad(force, retain_graph = True)
     return hessian.detach().numpy().reshape( 3*N, 3*N )
+

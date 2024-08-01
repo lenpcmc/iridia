@@ -5,10 +5,6 @@ from .force import *
 
 from ase.calculators.calculator import Calculator, all_changes, all_properties
 
-from typing import Callable
-from numpy.typing import ArrayLike
-
-
 def main():
     struct, atoms = buildArray("resources/cifs/alphaCristobalite.cif", 5)
     q = pqeq(atoms)

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "iridia"
-version = "1.0"
+dynamic = ["version"]
 authors = [
   { name = "Lennon McClanahan", email = "lenpcmc@gmail.com" },
   { name = "Collin Wilkinson", email = "wilkinsonc@alfred.edu" },
@@ -31,6 +31,9 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/lenpcmc/iridia"
 Issues = "https://github.com/lenpcmc/iridia/issues"
+
+[tool.setuptools.dynamic]
+version = { attr = "iridia.__version__" }
 
 [tool.setuptools.packages]
 find = { include = ["iridia*"] }

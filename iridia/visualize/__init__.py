@@ -1,2 +1,2 @@
-from .vplot import *
-from .vspect import *
+from . import vplot
+from . import vspect
