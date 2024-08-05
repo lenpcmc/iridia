@@ -1,7 +1,7 @@
 from os.path import dirname, abspath
 ir_root: str = dirname(abspath(__file__))
 
-__version__: str = "1.0.0"
+__version__: str = "1.0.1"
 
 from .ir import *
 

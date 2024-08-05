@@ -9,7 +9,7 @@ def spectNorm(spectrum: np.ndarray) -> np.ndarray:
     return spectrum / np.sum(spectrum)
 
 
-def splot(
+def vspect(
         x: np.ndarray,
         spectrum: np.ndarray,
         *label: str,
@@ -18,9 +18,12 @@ def splot(
         **kwargs,
     ) -> None:
     fig,ax = spectrumPlot(invert, **kwargs)
-    ax.plot(x * conv, spectrum, label = label, **kwargs)
-    ax.legend()
-    plt.show()
+
+    spectrum = np.atleast_2d(spectrum)
+    for i,s in enumerate(spectrum):
+        ax.plot(x * conv, s, label = label[i] if i < len(label) else None, **kwargs)
+
+    ax.legend() if len(label) > 0 else None
     plt.show()
     return
 

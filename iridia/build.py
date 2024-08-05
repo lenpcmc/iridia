@@ -1,6 +1,7 @@
 from .main import *
 
 from typing import Union
+from math import ceil
 from chgnet.model import StructOptimizer
 
 def buildNumber(
@@ -10,7 +11,7 @@ def buildNumber(
         **kwargs,
     ) -> tuple[Structure, Atoms]:
     atoms: Atoms = ase_read(filename, format = format)
-    rnum: int = int(np.cbrt( numAtoms / len(atoms) )) + 1
+    rnum: int = ceil(np.cbrt( numAtoms / len(atoms) ))
 
     rlx: Atoms = relax(atoms, **kwargs)[1]
     ratoms: Atoms = rlx * rnum

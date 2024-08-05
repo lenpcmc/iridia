@@ -14,8 +14,10 @@ from .vibrations.autohess import *
 from .pqeq.pqeq import *
 from .pqeq.charge import *
 
-from .visualize import *
+from .visualize.vplot import *
+from .visualize.vspect import *
 
+from math import ceil
 from pymatgen.io.ase import AseAtomsAdaptor
 
 from collections.abc import Callable
@@ -24,8 +26,10 @@ class iridia:
 
     def __init__(self, atoms = None, **kwargs) -> None:
         
+        self.calc = CHGNetCalculator()
         if isinstance(atoms, Atoms):
             self.atoms = atoms
+            self.calc = atoms.calc
         elif isinstance(atoms, str):
             self.atoms = self.read(atoms, **kwargs)
         
@@ -48,15 +52,19 @@ class iridia:
         ) -> None:
         # Read
         self.atoms = ase_read(filename, format = format)
-        self.relax(**kwargs) if relax else 0.
+        self.relax(**kwargs) if relax else self.atoms
 
         # Build
         if repeat:
             self.atoms = self.atoms * repeat
+            self.atoms.calc = self.calc
+
         elif numAtoms:
-            rnum: int = int(np.cbrt( numAtoms / len(self.atoms) )) + 1
+            rnum: int = ceil(np.cbrt( numAtoms / len(self.atoms) ))
             self.atoms = self.atoms * rnum
-        return self.relax(**kwargs) if relax else 0.
+            self.atoms.calc = self.calc
+
+        return self.relax(**kwargs) if relax else self.atoms
 
 
     def write(self, filename: str, **kwargs) -> None:
@@ -108,8 +116,8 @@ class iridia:
         elif attr == "ddm":
             result: np.ndarray = self.get_ddm()
 
-        elif attr == "struct":
-            result: Structure = self.get_struct()
+        elif attr == "structure":
+            result: Structure = self.get_structure()
 
         else:
             pass
@@ -117,8 +125,8 @@ class iridia:
         return result
 
 
-    def _get_struct(self, atoms: Atoms = None) -> Structure:
-        return AseAtomsAdaptor( atoms if bool(atoms) else self.atoms )
+    def _get_structure(self, atoms: Atoms = None) -> Structure:
+        return AseAtomsAdaptor( atoms if atoms is not None else self.atoms )
 
 
     def get_dynamical(self, **kwargs) -> np.ndarray:
@@ -131,13 +139,13 @@ class iridia:
 
     @ensure("dyn")
     def get_vdos(self, **kwargs) -> (np.ndarray, np.ndarray):
-        vd: np.ndarray = vdosDyn(self.dyn)
-        self.freqk = vd[0]
-        self.vibrations = vd[1]
-        return vd
+        vdos: np.ndarray = vdosDyn(self.dyn)
+        self.freqk = vdos[0]
+        self.vibrations = vdos[1]
+        return vdos
 
 
-    def get_charges(self, **kwargs) -> np.ndarray:
+    def get_charges(self, atoms = None, **kwargs) -> np.ndarray:
         
         if ("charges" not in self.atoms.calc.implemented_properties):
             self.charges = pqeq(self.atoms)
@@ -177,11 +185,11 @@ class iridia:
 
 
     @ensure("freqk", "vibrations", "ddm")
-    def plot(self, w = np.linspace(2000, 0, 2000) * 0.03, **kwargs) -> None:
+    def plot(self, w = np.linspace(2000, 0, 2000) * 0.03, y = None, **kwargs) -> None:
         #fig,ax = plt.subplots()
         #spectrumPlot(ax, w, self.abs(w, **kwargs), **kwargs)
         #plt.show()
-        splot(w, self.absorbance(w, **kwargs), **kwargs)
+        vspect(w, self.absorbance(w, y, **kwargs), **kwargs)
         return
 
 
