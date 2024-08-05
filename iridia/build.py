@@ -43,5 +43,6 @@ def relax(
     relaxer: StructOptimizer = StructOptimizer(optimizer_class = opt)
     result: dict[str] = relaxer.relax(atoms, fmax = fmax, steps = steps, relax_cell = relax_cell, **kwargs)
 
+    del relaxer
     return result.get("final_structure"), result.get("trajectory").atoms
 

@@ -20,7 +20,8 @@ def splot(
     fig,ax = spectrumPlot(invert, **kwargs)
     ax.plot(x * conv, spectrum, label = label, **kwargs)
     ax.legend()
-    fig.show()
+    plt.show()
+    plt.show()
     return
 
 

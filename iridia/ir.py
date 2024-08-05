@@ -20,17 +20,6 @@ from pymatgen.io.ase import AseAtomsAdaptor
 
 from collections.abc import Callable
 
-def main():
-    x = iridia()
-    x.read(f"{ir_root}/resources/atoms/wollastonite.cif")
-    x.plot(invert = False)
-
-    w = np.linspace(2000, 400, 1000) * 0.03
-    plt.plot(w / 0.03, x.abs(w))
-    plt.show()
-    return
-
-
 class iridia:
 
     def __init__(self, atoms = None, **kwargs) -> None:
@@ -133,10 +122,8 @@ class iridia:
 
 
     def get_dynamical(self, **kwargs) -> np.ndarray:
-        print(f"{self.atoms.calc = }")
         if (isinstance(self.atoms.calc, CHGNetCalculator) or self.atoms.calc is None):
-            #self.dyn = dynamical(self.atoms, self.verbose, autohessian, **kwargs)
-            self.dyn = dynamical(self.atoms, self.verbose, hessian, **kwargs)
+            self.dyn = dynamical(self.atoms, self.verbose, autohessian, **kwargs)
         else:
             self.dyn = dynamical(self.atoms, self.verbose, hessian, **kwargs)
         return self.dyn.copy()
@@ -198,8 +185,3 @@ class iridia:
         return
 
 
-    
-
-
-
-#main()
