@@ -13,6 +13,10 @@ With the hessian, we then apply a simple transformation to get the "dynamical", 
 \boldsymbol{H}_{i,j} = \dfrac{\partial^2 E}{\partial r_i \partial s_j}
 ```
 
+\# Note that the hessian is a 3N $\times$ 3N matrix, where the partials with respect to every atom have to be computed for $x$, $y$, and $z$. We denote this in the definition above with $r_i$ and $s_j$.
+
+---
+
 We've implemented two ways to find the hessian, the "numeric" approach and the "autograd" approach.
 The numeric approach is the most general; it's simply an approximate derivative found by shifting the position of atom by a small factor and measuring the change in the atomic forces.
 We've implemented this with forward differences: `f(x+h)`, backward differences `f(x-h)`, and central differences `avg[ f(x+h), f(x-h) ]`.
@@ -80,5 +84,5 @@ def hessRow(atoms: Atoms, i: int, method: str = "central", h: float = 1e-5) -> n
 
 ### Dynamical Matrix
 
-The dynamical matrix is a transformed hessian that includes the masses of each atom. 
+The dynamical matrix is a transformed hessian that includes the pairwise masses of interacting atoms.
 
