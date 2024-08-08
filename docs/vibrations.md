@@ -9,53 +9,53 @@ The "hessian" matrix stores the partials of force between atom $i$ and all other
 Said more simply, the hessian stores spring constants between atoms.
 With the hessian, we then apply a simple transformation to get the "dynamical", and from that, the "Vibrational Density of States (VDoS)".
 
-```math
+\[
 \mathbold{H} = \begin{bmatrix}
 	
 	\dfrac{\partial^2 E}{\partial x_1 \partial x_1} & 
 	\dfrac{\partial^2 E}{\partial x_1 \partial y_1} & 
 	\dfrac{\partial^2 E}{\partial x_1 \partial z_1} & 
 	\dfrac{\partial^2 E}{\partial x_1 \partial x_2} & 
-	\cdots
+	\cdots & 
 	\dfrac{\partial^2 E}{\partial x_1 \partial z_n} \\
 	
 	\dfrac{\partial^2 E}{\partial y_1 \partial x_1} & 
 	\dfrac{\partial^2 E}{\partial y_1 \partial y_1} & 
 	\dfrac{\partial^2 E}{\partial y_1 \partial z_1} & 
 	\dfrac{\partial^2 E}{\partial y_1 \partial x_2} & 
-	\cdots
+	\cdots & 
 	\dfrac{\partial^2 E}{\partial y_1 \partial z_n} \\
 	
 	\dfrac{\partial^2 E}{\partial z_1 \partial x_1} & 
 	\dfrac{\partial^2 E}{\partial z_1 \partial y_1} & 
 	\dfrac{\partial^2 E}{\partial z_1 \partial z_1} & 
 	\dfrac{\partial^2 E}{\partial z_1 \partial x_2} & 
-	\cdots
+	\cdots & 
 	\dfrac{\partial^2 E}{\partial z_1 \partial z_n} \\
 
 	\dfrac{\partial^2 E}{\partial x_2 \partial x_1} & 
 	\dfrac{\partial^2 E}{\partial x_2 \partial y_1} & 
 	\dfrac{\partial^2 E}{\partial x_2 \partial z_1} & 
 	\dfrac{\partial^2 E}{\partial x_2 \partial x_2} & 
-	\cdots
+	\cdots & 
 	\dfrac{\partial^2 E}{\partial x_2 \partial z_n} \\
 
-	\vdots
-	\vdots
-	\vdots
-	\vdots
-	\ddots
+	\vdots & 
+	\vdots & 
+	\vdots & 
+	\vdots & 
+	\ddots & 
 	\vdots \\
 
 	\dfrac{\partial^2 E}{\partial z_n \partial x_1} & 
 	\dfrac{\partial^2 E}{\partial z_n \partial y_1} & 
 	\dfrac{\partial^2 E}{\partial z_n \partial z_1} & 
 	\dfrac{\partial^2 E}{\partial z_n \partial x_2} & 
-	\cdots
+	\cdots & 
 	\dfrac{\partial^2 E}{\partial z_n \partial z_n} \\
 	
 \end{bmatrix}
-```
+\]
 
 
 We've implemented two ways to find the hessian, the "numeric" approach and the "autograd" approach.
