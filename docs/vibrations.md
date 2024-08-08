@@ -9,7 +9,8 @@ The "hessian" matrix stores the partials of force between atom $i$ and all other
 Said more simply, the hessian stores spring constants between atoms.
 With the hessian, we then apply a simple transformation to get the "dynamical", and from that, the "Vibrational Density of States (VDoS)".
 
-$$\mathbold{H} = \begin{bmatrix}
+```math
+\mathbold{H} = \begin{bmatrix}
 	
 	\dfrac{\partial^2 E}{\partial x_1 \partial x_1} & 
 	\dfrac{\partial^2 E}{\partial x_1 \partial y_1} & 
@@ -53,7 +54,8 @@ $$\mathbold{H} = \begin{bmatrix}
 	\cdots
 	\dfrac{\partial^2 E}{\partial z_n \partial z_n} \\
 	
-\end{bmatrix}$$
+\end{bmatrix}
+```
 
 
 We've implemented two ways to find the hessian, the "numeric" approach and the "autograd" approach.
