@@ -9,7 +9,7 @@ def main():
     #structure, atoms = buildArray("wollastonite.cif", [1,1,1])
     structure, atoms = buildArray("betaCristobalite.cif", [1,1,1])
     atoms.get_charges = lambda: atoms.arrays.get("oxi_states")
-    for i in range(10):
+    for i in range(1):
         q = pqeq(atoms)
         rs = relaxShells(atoms)
         plt.scatter(rs[...,0], rs[...,1])
@@ -17,25 +17,6 @@ def main():
     print("\n".join([ f"{atoms.get_chemical_symbols()[i]}, {q[i]}" for i in range(len(q)) ]))
     plt.show()
     return
-
-
-def pqeqForce(atoms: Atoms, n: int = 0) -> np.ndarray[float]:
-    # Extract Parameters
-    pos: np.ndarray = atoms.positions
-    spos: np.ndarray = relaxShells(atoms, n)
-    
-    elem: list[str] = atoms.get_chemical_symbols()
-    
-    cell: Cell = atoms.cell
-    pbc: list[bool] = atoms.pbc
-
-    # Charge Conditional
-    try:
-        charges: np.ndarray = atoms.get_charges()
-    except RuntimeError:
-        charges: np.ndarray = np.zeros(len(atoms))
-    
-    return PQEqForce(pos, spos, elem, charges, cell, pbc, n)
 
 
 def relaxShells(atoms: Atoms, n: int = 0) -> np.ndarray[float]:
@@ -108,9 +89,7 @@ def shellPositions(positions: np.ndarray[float], spositions: np.ndarray[float] =
     spos: np.ndarray = np.array(spositions)
 
     # PQEq Parameters
-    loadParams
-    params = loadParams(n)
-    #params: dict[str,str: float] = loadParams(n)
+    params: dict[str,str: float] = loadParams(n)
     Ks: np.ndarray = np.array([ [params["Ks", e]] for e in elem ])
     
     # Core-Shell Charges
@@ -121,8 +100,8 @@ def shellPositions(positions: np.ndarray[float], spositions: np.ndarray[float] =
     risjs: np.ndarray = get_distances(spos, spos, cell, pbc)[0]
     risjc: np.ndarray = get_distances(spos, pos, cell, pbc)[0]
 
-    Fisjs: np.ndarray = -1. * dC(risjs, elem, n = n) * np.stack([ Z*Z.T ], axis = -1)
-    Fisjc: np.ndarray = -1. * dC(risjc, elem, n = n) * np.stack([ Z*q.T ], axis = -1)
+    Fisjs: np.ndarray = -14.4 * dC(risjs, elem, n = n) * np.stack([ Z*Z.T ], axis = -1)
+    Fisjc: np.ndarray = -14.4 * dC(risjc, elem, n = n) * np.stack([ Z*q.T ], axis = -1)
 
     # Intra Atomic Interactions
     idx = np.arange(risjc.shape[0])
@@ -131,50 +110,10 @@ def shellPositions(positions: np.ndarray[float], spositions: np.ndarray[float] =
     # Newton's Method
     Fext: np.ndarray = np.sum( Fisjs - Fisjc, axis = 0 )
     Fint: np.ndarray = Ks * rsv
-    K: np.ndarray = 0.5 * Ks 
+    K: np.ndarray = Ks
 
     spos: np.ndarray = spos + (Fext + Fint) / K
     return spos
-
-
-def PQEqForce(position: np.ndarray[float], sposition: np.ndarray[float] = None, elem: str = None, charges: np.ndarray[float] = None, cell: Cell = None, pbc: list[bool] = None, n: int = 0) -> np.ndarray[float]:
-    
-    # Default Behavior
-    if (sposition is None):
-        #sposition: np.ndarray = shellPositions(position, position, elem, charge, cell, pbc, n)
-        sposition: np.ndarray = position.copy()
-    if (elem is None):
-        elem: list[str] = list( 'H' for i in range(len(position)) )
-    if (charges is None):
-        charges: np.ndarray = np.zeros(len(position))
-
-    # Shorthand
-    pos: np.ndarray = np.array(position)
-    spos: np.ndarray = np.array(sposition)
-    
-    # PQEq Parameters
-    params: dict[str,str: float] = loadParams(n)
-    Ks: np.ndarray = np.array([ [params["Ks", e]] for e in elem ])
-    
-    # Core-Shell Charges
-    Z: np.ndarray = np.array([ [params["Z", e]] for e in elem ])
-    qc: np.ndarray = np.array([ charges ]).T + Z
-    qs: np.ndarray = -1. * qc
-
-    # Core-Shell Distances
-    ricjc: np.ndarray = get_distances(pos, pos, cell, pbc)[0]
-    ricjs: np.ndarray = get_distances(pos, spos, cell, pbc)[0]
-    
-    # Core-Shell Forces
-    Ficjc: np.ndarray = -1. * dC(ricjc, elem, n = n) * np.stack([ qc*qc.T ], axis = -1)
-    Ficjs: np.ndarray = -1. * dC(ricjs, elem, n = n) * np.stack([ qc*qs.T ], axis = -1)
-    Fext: np.ndarray = np.sum( Ficjc - Ficjs, axis = 0 )
-
-    # Internal Forces
-    idx: np.ndarray[int] = np.arange(ricjs.shape[0])
-    Fint: np.ndarray = -1. * Ks * ricjs[idx, idx, :]
-
-    return Fext + Fint
 
 
 if __name__ == "__main__":

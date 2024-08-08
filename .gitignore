@@ -3,3 +3,5 @@
 *.traj
 nohup.out
 test.py
+rruffIR.py
+__pychache__

@@ -77,7 +77,7 @@ def PQEqEnergy(positions: np.ndarray[float], spositions: np.ndarray[float], elem
     # Intrinsic Energy
     XoEnergy: np.ndarray = Xo * q
     JoEnergy: np.ndarray = Jo * q**2. / 2.
-    springEnergy: np.ndarray = Ks * np.diag(ricjs)**2. / 2.
+    KsEnergy: np.ndarray = Ks * np.diag(ricjs)**2. / 2.
 
     # Extrinsic Energy
     Eicjc = C(ricjc, elem, n = n) * q*q.T
@@ -85,7 +85,7 @@ def PQEqEnergy(positions: np.ndarray[float], spositions: np.ndarray[float], elem
     Eisjc = C(risjc, elem, n = n) * Z*q.T
     Eisjs = C(risjs, elem, n = n) * Z*Z.T
 
-    totalEnergy = np.sum(XoEnergy + JoEnergy + springEnergy) + np.sum( Eicjc - Eicjs - Eisjc + Eisjs )
+    totalEnergy = np.sum(XoEnergy + JoEnergy + KsEnergy) + np.sum( Eicjc - Eicjs - Eisjc + Eisjs )
     return totalEnergy
 
 

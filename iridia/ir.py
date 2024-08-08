@@ -13,6 +13,7 @@ from .vibrations.autohess import *
 
 from .pqeq.pqeq import *
 from .pqeq.charge import *
+from .pqeq.qeq import qeq
 
 from .visualize.vplot import *
 from .visualize.vspect import *
@@ -21,6 +22,7 @@ from math import ceil
 from pymatgen.io.ase import AseAtomsAdaptor
 
 from collections.abc import Callable
+from functools import cache
 
 class iridia:
 
@@ -170,7 +172,8 @@ class iridia:
             choose: Callable[[Atoms], list] = lambda atoms: np.zeros(len(atoms)),
             **kwargs,
         ) -> np.ndarray:
-        return categoryParts(self.atoms, self.vibrations, choose)
+        self.cparts = categoryParts(self.atoms, self.vibrations, choose)
+        return self.cparts
 
 
     @ensure("freqk", "vibrations", "ddm")
@@ -178,18 +181,40 @@ class iridia:
             self,
             w: float = np.linspace(60, 5, 2000),
             y: float = 0.25,
-            **kwargs,
+            choose: Callable[[Atoms], list] = lambda atoms: np.zeros(len(atoms)),
         ) -> float:
-        cparts: np.ndarray = self.get_cparts(**kwargs)
+        cparts: np.ndarray = self.get_cparts(choose)
         return absorbance(w, self.freqk, self.ddm * np.sqrt(cparts), y)
 
 
+    @cache
     @ensure("freqk", "vibrations", "ddm")
-    def plot(self, w = np.linspace(2000, 0, 2000) * 0.03, y = None, **kwargs) -> None:
-        #fig,ax = plt.subplots()
-        #spectrumPlot(ax, w, self.abs(w, **kwargs), **kwargs)
-        #plt.show()
-        vspect(w, self.absorbance(w, y, **kwargs), **kwargs)
+    def bands(
+            self,
+            w: float = np.linspace(60, 5, 2000),
+            y: float = 0.25,
+            choose: Callable[[Atoms], list] = lambda atoms: np.zeros(len(atoms)),
+        ) -> np.ndarray[float]:
+        # Init
+        cats: list = choose(self.atoms)
+        cparts: np.ndarray = self.get_cparts(choose)
+        cabs: np.ndarray = self.absorbance(w, self.freqk, self.ddm * np.sqrt(cparts), y)
+
+        # Area
+        cculm: np.ndarray = np.sum(cabs, axis = 0) * (np.max(w) - np.min(w)) / w.size
+
+
+
+    @ensure("freqk", "vibrations", "ddm")
+    def plot(
+            self,
+            w: float = np.linspace(60, 5, 2000),
+            y: float = 0.25,
+            choose: Callable[[Atoms], list] = lambda atoms: np.zeros(len(atoms)),
+            **kwargs,
+        ) -> None:
+        spect: np.ndarray = self.absorbance(w, y, choose)
+        vspect(w, spect, **kwargs)
         return
 
 
