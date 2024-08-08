@@ -6,18 +6,14 @@ from .force import *
 from ase.calculators.calculator import Calculator, all_changes, all_properties
 
 def main():
-    print('here')
     atoms = ase_read("../resources/relaxed/Li2B4O7.cif")
     #atoms = ase_read("../resources/cifs/alphaCristobalite.cif")
-    print('here2')
-    #q = qeq(atoms, 1)
+    atoms = ase_read("../resources/relaxed/alphaCristobalite.cif")
+    atoms = ase_read("../resources/relaxed/wollastonite.cif")
     q = qeq(atoms, 0)
-    print('here3')
-    #atoms.get_charges = lambda: q
-    print('here4')
+    atoms.get_charges = lambda: q
     #print(f"{q = }")
     return
-print('here0')
 
 
 #class QEqCalculator(Calculator):
@@ -109,6 +105,7 @@ def QEq(pos, elem, cell, pbc, n = 0):
 
     rnorm = get_distances(pos, pos, cell = cell, pbc = pbc)[1]
     Cicjc = C(rnorm, elem)
+    #Cicjc = Cicjc * (rnorm <= 12.5)
     
     Hij = 14.4 * Cicjc + np.diag(Jo)
     Ai = np.array([ Xo ]).T
@@ -136,6 +133,4 @@ def QEq(pos, elem, cell, pbc, n = 0):
     return q
 
 
-print('here now')
 main()
-print('here after')

@@ -68,6 +68,9 @@ def PQEq(positions: np.ndarray[float], spositions: np.ndarray[float], elem: list
     Cicjc: np.ndarray = C(ricjc, elem, n = n)
     Cicjs: np.ndarray = C(ricjs, elem, n = n)
 
+    #Cicjc = Cicjc * (ricjc <= 12.5)
+    #Cicjs = Cicjs * (ricjs <= 12.5)
+
     #Hij: np.ndarray = 14.4 * Cicjc + np.diag(Jo)
     #Ai: np.ndarray = Xo + Z * np.sum(np.tril( Cicjc - Cicjs ), axis = 1, keepdims = True)
 
