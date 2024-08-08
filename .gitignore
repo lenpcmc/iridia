@@ -1,7 +1,9 @@
+__pychache__/*
+
 *.npy
 *.data
 *.traj
+
 nohup.out
 test.py
 rruffIR.py
-*__pychache__

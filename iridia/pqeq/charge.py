@@ -73,22 +73,23 @@ def PQEq(positions: np.ndarray[float], spositions: np.ndarray[float], elem: list
 
     Hij: np.ndarray = 14.4 * Cicjc + np.diag(Jo)
     Ai: np.ndarray = Xo + 14.4 * Z * np.sum(np.tril( Cicjc - Cicjs ).T, axis = 0, keepdims = True)
-    Hinv = np.linalg.inv(Hij)
+    #Hinv = np.linalg.inv(Hij)
 
-    # H Inversion (PCG  Approximation)
+    # H Inverse (PCG  Approximation)
     sHij_iLU: SuperLu = spilu(Hij)
     M: LinearOperator = LinearOperator( Hij.shape, sHij_iLU.solve )
 
     # Charge Equilibrium Condition
-    #qt: np.ndarray = ConjugateGradient(Hij, -Ai.T, M = M)[0]
-    #qh: np.ndarray = ConjugateGradient(Hij, -1. * np.ones(Ai.shape).T, M = M)[0]
-    #mu: float = np.sum(qt) / np.sum(qh)
-    
-    qt: np.ndarray = Hinv @ -Ai.T
-    qh = Hinv @ (-1. * np.ones(Ai.shape).T)
-    mu = np.sum(qt) / np.sum(qh)
+    qt: np.ndarray = ConjugateGradient(Hij, -Ai.T, M = M)[0]
+    qh: np.ndarray = ConjugateGradient(Hij, -1. * np.ones(Ai.shape).T, M = M)[0]
+    mu: float = np.sum(qt) / np.sum(qh)
 
-    q: np.ndarray = qt - mu * qh
+    #qt: np.ndarray = Hinv @ -Ai.T
+    #qh = Hinv @ (-1. * np.ones(Ai.shape).T)
+    #mu = np.sum(qt) / np.sum(qh)
+
+    #q: np.ndarray = qt - mu * qh
+    q: np.ndarray = np.array([ qt - mu * qh ]).T
     return q
 
 

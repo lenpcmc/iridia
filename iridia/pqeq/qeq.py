@@ -11,7 +11,7 @@ def main():
     #atoms = ase_read("../resources/cifs/alphaCristobalite.cif")
     print('here2')
     #q = qeq(atoms, 1)
-    q = qeq(atoms, 2)
+    q = qeq(atoms, 0)
     print('here3')
     #atoms.get_charges = lambda: q
     print('here4')
@@ -105,29 +105,34 @@ def QEq(pos, elem, cell, pbc, n = 0):
 
     par = loadParams(n)
     Xo = np.array([ par["Xo", e] for e in elem ])
-    Jo = np.array([ [par["Jo", e]] for e in elem ])
+    Jo = np.array([ par["Jo", e] for e in elem ])
 
     rnorm = get_distances(pos, pos, cell = cell, pbc = pbc)[1]
     Cicjc = C(rnorm, elem)
     
-    H = 14.4 * Cicjc + np.diag(Jo)
-    Hinv = np.linalg.inv(H)
-    Ai = np.array([Xo]).T
+    Hij = 14.4 * Cicjc + np.diag(Jo)
+    Ai = np.array([ Xo ]).T
 
-    qt = Hinv @ (-Ai)
-    qh = Hinv @ (-1. * np.ones(Ai.shape))
-    mu = np.sum(qt) / np.sum(qh)
+    # H Inverse (PCG  Approximation)
+    sHij_iLU: SuperLu = spilu(Hij)
+    M: LinearOperator = LinearOperator( Hij.shape, sHij_iLU.solve )
 
-    q = qt - mu * qh
-    print(q)
-    plt.plot(q)
+    # Charge Equilibrium Condition
+    qt: np.ndarray = ConjugateGradient(Hij, -Ai, M = M)[0]
+    qh: np.ndarray = ConjugateGradient(Hij, -1. * np.ones(Ai.shape), M = M)[0]
+    mu: float = np.sum(qt) / np.sum(qh)
 
+    q = np.array([ qt - mu * qh ]).T
     pq = PQEq(pos.copy(), pos.copy(), elem, cell, pbc, n)
-    plt.plot(pq)
+    
     print(f"{q = }")
     print(f"{pq = }")
     print(f"{q - pq = }")
+    
+    plt.plot(q)
+    plt.plot(pq)
     plt.show()
+    
     return q
 
 
