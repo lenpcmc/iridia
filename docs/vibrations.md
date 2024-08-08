@@ -10,8 +10,7 @@ Said more simply, the hessian stores spring constants between atoms.
 With the hessian, we then apply a simple transformation to get the "dynamical", and from that, the "Vibrational Density of States (VDoS)".
 
 ```math
-\boldsymbol{H} = \left[
-\begin{array}{ccccc}
+\boldsymbol{H} = \begin{pmatrix}
 	
 	\dfrac{\partial^2 E}{\partial x_1 \partial x_1} & 
 	\dfrac{\partial^2 E}{\partial x_1 \partial y_1} & 
@@ -55,7 +54,7 @@ With the hessian, we then apply a simple transformation to get the "dynamical", 
 	\cdots & 
 	\dfrac{\partial^2 E}{\partial z_n \partial z_n} \\
 	
-\end{array} \right]
+\end{pmatrix}
 ```
 
 
