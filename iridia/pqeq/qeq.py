@@ -133,4 +133,4 @@ def QEq(pos, elem, cell, pbc, n = 0):
     return q
 
 
-main()
+#main()

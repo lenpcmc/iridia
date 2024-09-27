@@ -4,6 +4,7 @@ from iridia.visualize.vspect import *
 from iridia.pqeq.qeq import qeq
 
 from rruffIR import *
+import numpy as np
 
 rpref = "../resources/rruff/processed/data/"
 rreff = [
@@ -26,6 +27,7 @@ preff = [
         "LiB.cif",
     ]
 
+'''
 def main():
     for r,p in zip(rreff, preff):
         spectrum, rs = rruffIR(f"{rpref}/{r}")
@@ -64,6 +66,11 @@ def main():
         fig.savefig(f"{p[0].upper()}{p[1:-4]}-StackA.png", dpi = 600)
 
         plt.show()
+'''
+
+ir = iridia("../resources/lammps/saved/CLiB.cif")
+dyn = ir.get_dynamical()
+np.save("../resources/arrays/CLiB-A.npy", dyn)
 
 
 main()
