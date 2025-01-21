@@ -208,13 +208,15 @@ class iridia:
     @ensure("freqk", "vibrations", "ddm")
     def plot(
             self,
-            w: float = np.linspace(500, 5, 2000),
+            w: float = np.linspace(60, 15, 2000),
             y: float = 0.25,
             choose: Callable[[Atoms], list] = lambda atoms: np.zeros(len(atoms)),
             **kwargs,
         ) -> None:
+
         spect: np.ndarray = self.absorbance(w, y, choose)
-        vspect(w, spect, **kwargs)
+        w = extend(w, 2)
+        vspect(w, spect.T, **kwargs)
         return
 
 
