@@ -208,7 +208,7 @@ class iridia:
     @ensure("freqk", "vibrations", "ddm")
     def plot(
             self,
-            w: float = np.linspace(60, 5, 2000),
+            w: float = np.linspace(500, 5, 2000),
             y: float = 0.25,
             choose: Callable[[Atoms], list] = lambda atoms: np.zeros(len(atoms)),
             **kwargs,
