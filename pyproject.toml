@@ -1,42 +1,10 @@
-[build-system]
-requires = ["setuptools >= 61.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "iridia"
-dynamic = ["version"]
-authors = [
-  { name = "Lennon McClanahan", email = "lenpcmc@gmail.com" },
-  { name = "Collin Wilkinson", email = "wilkinsonc@alfred.edu" },
-]
-maintainers = [
-  { name = "Lennon McClanahan", email = "lenpcmc@gmail.com" }
-]
-description = "A toolkit for predicting IR Absorbance Spectra"
+version = "0.1.0"
+description = "Add your description here"
 readme = "README.md"
-requires-python = ">= 3.7"
+requires-python = ">=3.13"
 dependencies = [
-  "ase >= 3.23.0",
-  "cython >= 3",
-  "numpy >= 1.26, < 2.0",
-  "chgnet >= 0.3.0",
-  "torch >= 1.11.0",
+    "chgnet>=0.4.0",
+    "scienceplots>=2.1.1",
 ]
-classifiers = [
-  "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-]
-
-[project.urls]
-Homepage = "https://github.com/lenpcmc/iridia"
-Issues = "https://github.com/lenpcmc/iridia/issues"
-
-[tool.setuptools.dynamic]
-version = { attr = "iridia.__version__" }
-
-[tool.setuptools.packages]
-find = { include = ["iridia*"] }
-
-[tool.setuptools.package-data]
-"*" = ["*.csv"]
