@@ -13,7 +13,7 @@ from typing import Union
 def _loneBatch(graph, chgnet) -> BatchedGraph:
     return BatchedGraph.from_graphs([graph], chgnet.bond_basis_expansion, chgnet.angle_basis_expansion)
 
-def autohessian(atoms: Union[Atoms, Structure, CrystalGraph], model = None, verbose: str = "Computing Hessian Matrix") -> np.ndarray:
+def autohessian(atoms: Atoms | Structure | CrystalGraph, model = None, verbose: str = "Computing Hessian Matrix") -> np.ndarray:
     # Ensure
     if not isinstance(atoms.calc, CHGNetCalculator):
         atoms = atoms.copy()

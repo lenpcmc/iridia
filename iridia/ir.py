@@ -20,6 +20,7 @@ from .visualize.vspect import *
 
 from math import ceil
 from pymatgen.io.ase import AseAtomsAdaptor
+from chgnet.utils import solve_charge_by_mag
 
 from collections.abc import Callable
 from functools import cache
@@ -147,9 +148,15 @@ class iridia:
         return vdos
 
 
-    def get_charges(self, atoms = None, **kwargs) -> np.ndarray:
+    def get_charges(self, atoms = None, oxi = True, **kwargs) -> np.ndarray:
         
-        if ("charges" not in self.atoms.calc.implemented_properties):
+        if (oxi):
+            adaptor: AseAtomsAdaptor = AseAtomsAdaptor()
+            struct: structure = adaptor.getstructure()
+            charges: np.ndarray = solve_charge_by_mag(structure)
+            self.atoms.get_charges = lambda: self.charges
+
+        elif ("charges" not in self.atoms.calc.implemented_properties):
             self.charges = pqeq(self.atoms)
             self.atoms.get_charges = lambda: self.charges
 

@@ -25,7 +25,7 @@ def loadParams(n: int = 0, eV: bool = True):
     # Partition
     par: list[str] = indata.pop(0)[1:]
     elements: list[str] = [ entry[0] for entry in indata ]
-    atomParams: np.ndarray = np.array([ entry[1:] for entry in indata ], dtype = np.float_)
+    atomParams: np.ndarray = np.array([ entry[1:] for entry in indata ], dtype = np.float64)
 
     # K Conversion 
     if (eV):
