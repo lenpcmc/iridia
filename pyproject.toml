@@ -8,3 +8,8 @@ dependencies = [
     "chgnet>=0.4.0",
     "scienceplots>=2.1.1",
 ]
+
+[project.optional-dependencies]
+ipython = [
+    "ipython>=9.2.0",
+]

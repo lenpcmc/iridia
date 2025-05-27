@@ -1,5 +1,5 @@
 import iridia
 
-ir = iridia("LiB2O3.data", format = "lammps-data", numAtoms = 100)
+ir = iridia("Li2B4O7.cif", numAtoms = 100)
 
 ir.plot()

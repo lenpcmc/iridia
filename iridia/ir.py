@@ -129,7 +129,7 @@ class iridia:
 
 
     def _get_structure(self, atoms: Atoms = None) -> Structure:
-        return AseAtomsAdaptor( atoms if atoms is not None else self.atoms )
+        return AseAtomsAdaptor().get_structure(atoms if atoms is not None else self.atoms)
 
 
     def get_dynamical(self, **kwargs) -> np.ndarray:
@@ -151,9 +151,9 @@ class iridia:
     def get_charges(self, atoms = None, oxi = True, **kwargs) -> np.ndarray:
         
         if (oxi):
-            adaptor: AseAtomsAdaptor = AseAtomsAdaptor()
-            struct: structure = adaptor.getstructure()
-            charges: np.ndarray = solve_charge_by_mag(structure)
+            struct: Structure = self._get_structure()
+            self.charges = solve_charge_by_mag(struct)
+            print(self.charges)
             self.atoms.get_charges = lambda: self.charges
 
         elif ("charges" not in self.atoms.calc.implemented_properties):
