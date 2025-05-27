@@ -148,12 +148,11 @@ class iridia:
         return vdos
 
 
-    def get_charges(self, atoms = None, oxi = True, **kwargs) -> np.ndarray:
+    def get_charges(self, atoms = None, oxi = False, **kwargs) -> np.ndarray:
         
         if (oxi):
             struct: Structure = self._get_structure()
             self.charges = solve_charge_by_mag(struct)
-            print(self.charges)
             self.atoms.get_charges = lambda: self.charges
 
         elif ("charges" not in self.atoms.calc.implemented_properties):
