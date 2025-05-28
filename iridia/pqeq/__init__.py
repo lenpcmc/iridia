@@ -5,4 +5,5 @@ from .charge import pqeq
 from . import energy
 from . import force
 #from . import pqeq
+from .qeq import QEqCalculator
 
